@@ -45,4 +45,4 @@ http://dl-cdn.alpinelinux.org/alpine/v3.16/community
 ```
 Now we can install packages and run the VM normally.
 ### Running Containers
-The packages `docker` and `docker-compose` are required for this.
+The packages `docker` and `docker-compose` are required for this. `make` is required to use the Makefile.
