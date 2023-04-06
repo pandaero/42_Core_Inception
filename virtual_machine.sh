@@ -58,7 +58,7 @@ if [ "$1" == "create" ]; then
 	VBoxManage modifyvm $NAME --nic1 nat
 	VBoxManage modifyvm $NAME --graphicscontroller vmsvga
 	# Set VM resources (disk and OS-image)
-	VBoxManage createmedium disk --filename $DIR/$HDISK --size 2048 --format VDI 
+	VBoxManage createmedium disk --filename $DIR/$HDISK --size 4096 --format VDI 
 	VBoxManage storagectl $NAME --name "SATA Controller" --add sata
 	VBoxManage storageattach $NAME --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $DIR/$HDISK
 	VBoxManage storagectl $NAME --name "IDE Controller" --add ide --controller PIIX4
