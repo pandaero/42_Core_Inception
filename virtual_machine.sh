@@ -1,10 +1,11 @@
 #!/bin/bash
+# Script to create an Alpine 3.16 Virtual Machine on macOS using VirtualBox
 
 NAME="Alpine_3.16"
 DIR=Alpine_VM
 IMAGE=alpine-standard-3.16.4-x86_64.iso
 HASH=$IMAGE.sha256
-IMAGELINK=https://dl-cdn.alpinelinux.org/alpine/v3.16/releases/x86_64/alpine-standard-3.16.4-x86_64.iso
+IMAGELINK=https://dl-cdn.alpinelinux.org/alpine/v3.16/releases/x86_64/$IMAGE
 HASHLINK=$IMAGELINK.sha256
 VIRTUALBOXDIR=/Users/pandalaf/Library/VirtualBox/$DIR
 HDISK=${NAME}_disk.vdi
@@ -14,9 +15,11 @@ if [ "$1" == "clean" ]; then
 	rm -rf $DIR
 fi
 
-# Clear the VM Virtualbox directory and from VirtualBox
+# Clear the VM VirtualBox directory and from VirtualBox
 if [ "$1" == "clear" ]; then
-	rm -f $DIR/.vdi
+	if [ -f "$DIR/$HDISK" ]; then
+		rm -f $DIR/$HDISK
+	fi
 	rm -rf $VIRTUALBOXDIR
 	VBoxManage unregistervm $NAME
 fi
@@ -29,34 +32,31 @@ if [ "$1" == "create" ]; then
 	# Download OS image hash to determine whether to download again
 	wget $HASHLINK
 	mv $HASH $DIR
+	cd $DIR
 	# Download OS image if current incorrect and move to directory
-	if [ -f "$DIR/$IMAGE" ]; then
-		cd $DIR
+	if [ -f "$IMAGE" ]; then
 		shasum -a 256 $IMAGE > checksum
 		if [ diff checksum $HASH ]; then
 			rm -f $IMAGE
 			wget $IMAGELINK
-			rm -f $HASH
-			rm -f checksum
 		fi
 	else
 		wget $IMAGELINK
-		mv $IMAGE $DIR
-		cd $DIR
 		shasum -a 256 $IMAGE > checksum
 		if [ $(diff checksum $HASH) ]; then
 			echo "Error: image hash does not match."
 			exit 1
 		fi
-		rm -f $HASH
-		rm -f checksum
 	fi
+	rm -f $HASH
+	rm -f checksum
 	cd ..
 	# Create VM entry
 	VBoxManage createvm --name $NAME --ostype Linux_64 --register --basefolder $DIR
 	# Set VM properties (memory and network)
 	VBoxManage modifyvm $NAME --memory 1024 --vram 128
 	VBoxManage modifyvm $NAME --nic1 nat
+	VBoxManage modifyvm $NAME --graphicscontroller vmsvga
 	# Set VM resources (disk and OS-image)
 	VBoxManage createmedium disk --filename $DIR/$HDISK --size 500 --format VDI 
 	VBoxManage storagectl $NAME --name "SATA Controller" --add sata
