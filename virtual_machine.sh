@@ -102,3 +102,8 @@ fi
 if [ "$1" == "start" ]; then
 	VBoxManage startvm $NAME --type gui
 fi
+
+# Stop VM
+if [ "$1" == "stop" ]; then
+	VBoxManage controlvm $NAME acpipowerbutton
+fi
