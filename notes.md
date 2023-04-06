@@ -26,6 +26,15 @@ The script will do the following:
 - Create and register the VM in VirtualBox (requires VirtualBox)
 The script will check for the image to be correctly downloaded. It includes a VM-starting section, however the VM is going to be set-up using the VirtualBox GUI as well.
 
+I began to run the VM from a USB and VirtualBox on different machines, so the set-up includes a step that exports the machine to a universal format, and a parameter that imports the virtual machine to a new virtualbox session. (`unregister` and `import`)
+
+#### Script Usage
+`bash virtual_machine.sh create` - will create the new machine and prompt the snapshot folder to be changed to match the VM disk folder.
+`bash virtual_machine.sh export` - will save the machine to an importable file.
+`bash virtual_machine.sh clear` - will delete the VM from the VirtualBox register and its files.
+`bash virtual_machine.sh import` - will import the exported (or created) VM from the file.
+The VM's snapshots will not be exported into the importable file!
+
 #### Operating System Set-Up
 It is a good idea to save snapshots of the machine at key stages of the set-up. The first would be after successfully booting up for the first time.
 
