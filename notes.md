@@ -28,6 +28,7 @@ The script will check for the image to be correctly downloaded. It includes a VM
 
 #### Operating System Set-Up
 It is a good idea to save snapshots of the machine at key stages of the set-up. The first would be after successfully booting up for the first time.
+
 ##### `setup-alpine` Command
 This command will provide a guided set-up for system elements (used values in brackets):
 - input (us - us keyboard)
@@ -40,7 +41,7 @@ This command will provide a guided set-up for system elements (used values in br
 - system download mirrors (f)
 - Additional user (loginname / password)
 - ssh server (openssh) - default
-- machine disk (virtual machine hard disk)
+- machine disk (sda) - virtual machine hard disk for system installation
 - disk partitioning (lvmsys)
 After running the command and creating the partitions, we will reboot the machine (`reboot` command). Note that the first time we booted from the OS image. Now we will want to boot from the machine hard disk. A great point for a second snapshot is after this boot.
 
@@ -56,12 +57,17 @@ Then apply the changes by running:
 ```
 
 ##### Package Manager
-The package manager APK must be configured before being able to install packages. Again, `setup-alpine` should have configured this, though not the specific version mirrors. We are interested in the `nano`, `make`, `docker`, `docker-compose`, and potentially other packages. We can edit `/etc/apk/repositories` and add mirrors:
+The package manager APK must be configured before being able to install packages. Again, `setup-alpine` should have configured this, though not the specific version mirrors. We are interested in the `nano`, `make`, `docker`, `docker-compose`, and potentially other packages. We can edit `/etc/apk/repositories` (the repository lists) and add the following:
 ```
 http://dl-cdn.alpinelinux.org/alpine/v3.16/main
 http://dl-cdn.alpinelinux.org/alpine/v3.16/community
 ```
 Now we can install packages and run the VM normally.
+
+##### Display Manager
+At some point in the project, we will verify that our containers are running well by opening the website that they serve. For this we will need a GUI and access to a browser. Therefore, we will install a display manager. Through a light search, I decided on using XFCE for its light weight. I followed the following steps:
+- Run the `setup-xorg-base` command, it will download packages to prepare an Xorg-server based GUI.
+- To run XFCE4 minimally, these packages need to be installed: `xfce4` `xfce4-terminal` `xfce4-screensaver` `lightdm-gtk-greeter` `dbus`
 
 ## Creating the Containers
 The packages `docker` and `docker-compose` are required for this. `make` is required to use the Makefile.
