@@ -15,17 +15,11 @@ if [ "$1" == "clean" ]; then
 	rm -rf $DIR
 fi
 
-# Clear the VM VirtualBox directory and from VirtualBox
+# Clear the VM from VirtualBox
 if [ "$1" == "clear" ]; then
-	if [ -f "$DIR/$HDISK" ]; then
-		rm -f $DIR/$HDISK
-	fi
-	if [ -f "$DIR/$NAME.ova" ]; then
-		rm -f $DIR/$NAME.ova
-	fi
 	if [[ $(VBoxManage list vms | grep $NAME) ]]; then
 		rm -rf $VIRTUALBOXDIR
-		VBoxManage unregistervm $NAME
+		VBoxManage unregistervm $NAME -delete
 	fi
 fi
 
@@ -67,25 +61,19 @@ if [ "$1" == "create" ]; then
 	VBoxManage storagectl $NAME --name "SATA Controller" --add sata
 	VBoxManage storageattach $NAME --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $DIR/$HDISK
 	VBoxManage storagectl $NAME --name "IDE Controller" --add ide --controller PIIX4
-	VBoxManage storageattach $NAME --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium $DIR/$IMAGE
-	VBoxManage modifyvm $NAME --boot1 dvd --boot2 disk --boot3 none --boot4 none
+	VBoxManage modifyvm $NAME --boot1 disk --boot2 dvd --boot3 none --boot4 none
 	# Export the VM as OVA for import
 	VBoxManage export $NAME --output $DIR/$NAME.ova --ovf10
 	# Delete VM from machine
 	VBoxManage unregistervm $NAME --delete
 	# Re-import machine
 	VBoxManage import $DIR/$NAME.ova --vsys 0 --vmname $NAME --unit 12 --disk $DIR/$HDISK
-	# Re-attach OS image to disk controller
+	# Attach OS image to disk controller
 	VBoxManage storageattach $NAME --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium $DIR/$IMAGE
 	echo "Remember to change the snapshots folder of the VM"
 fi
 
-# Unregister VM and delete from machine
-if [ "$1" == "unregister" ]; then
-	VBoxManage unregistervm $NAME --delete
-fi
-
-# Export VM (keep in mind new snapshots)
+# Export VM
 if [ "$1" == "export" ]; then
 	if [ -f "$DIR/$NAME.ova" ]; then
 		rm -f $DIR/$NAME.ova
@@ -105,5 +93,5 @@ fi
 
 # Stop VM
 if [ "$1" == "stop" ]; then
-	VBoxManage controlvm $NAME acpipowerbutton
+	VBoxManage controlvm $NAME poweroff
 fi
