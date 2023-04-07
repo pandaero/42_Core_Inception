@@ -55,7 +55,7 @@ This command will provide a guided set-up for system elements (used values in br
 After running the command and creating the partitions, we will reboot the machine (`reboot` command). Note that the first time we booted from the OS image. Now we will want to boot from the machine hard disk. A great point for a second snapshot is after this boot.
 
 ##### Network Interfaces
-Very importantly, the network interface must be set-up ([documentation](https://wiki.alpinelinux.org/wiki/Configure_Networking)), this should have been done by the `setup-alpine` command, but to do this manually we would edit the `/etc/network/interfaces` and add the ethernet adapter with the following lines:
+Very importantly, the network interface must be set-up ([Alpine Wiki](https://wiki.alpinelinux.org/wiki/Configure_Networking)), this should have been done by the `setup-alpine` command, but to do this manually we would edit the `/etc/network/interfaces` and add the ethernet adapter with the following lines:
 ```
 auto eth0
 iface eth0 inet dhcp
@@ -74,9 +74,14 @@ http://dl-cdn.alpinelinux.org/alpine/v3.16/community
 Now we can install packages and run the VM normally.
 
 ##### Display Manager
-At some point in the project, we will verify that our containers are running well by opening the website that they serve. For this we will need a GUI and access to a browser. Therefore, we will install a display manager. Through a light search, I decided on using XFCE for its light weight. I followed the following steps:
+At some point in the project, we will verify that our containers are running well by opening the website that they serve. For this we will need a GUI and access to a browser. Therefore, we will install a display manager. Through a light search, I decided on using XFCE with Lightdm for its light weight. I followed the following steps:
 - Run the `setup-xorg-base` command, it will download packages to prepare an Xorg-server based GUI.
-- To run XFCE4 minimally, these packages need to be installed: `xfce4` `xfce4-terminal` `xfce4-screensaver` `lightdm-gtk-greeter` `dbus`
+- To run XFCE4/Lightdm minimally, these packages need to be installed: `xfce4` `xfce4-terminal` `xfce4-screensaver` `lightdm-gtk-greeter` `dbus`
+- The service `dbus` has to be running, launched with: `rc-service dbus start`
+- The service can be set to run on start-up with `rc-update add dbus` (apparently `rc` could be deprecated and superseded by `openrc`)
+- Another service `mdev` may be required to be added to the sysinit runlevel: `rc-update add mdev sysinit`
+- To enable the display manager, the following command can be run: `rc-update add lightdm`
+- To run the display manager: `rc-service lightdm start`
 
 ## Creating the Containers
 The packages `docker` and `docker-compose` are required for this. `make` is required to use the Makefile.
