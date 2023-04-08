@@ -1,2 +1,5 @@
 # Virtual Machine
 Alpine_VM/
+
+# Credentials and Variables
+src/.env
