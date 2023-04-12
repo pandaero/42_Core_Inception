@@ -6,7 +6,7 @@
 #    By: pandalaf <pandalaf@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/07 15:28:43 by pandalaf          #+#    #+#              #
-#    Updated: 2023/04/07 16:59:19 by pandalaf         ###   ########.fr        #
+#    Updated: 2023/04/12 20:19:47 by pandalaf         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,20 @@ NGINX		:= $(REQS)/nginx
 MARIADB		:= $(REQS)/mariadb
 WORDPRESS	:= $(REQS)/wordpress
 
+# Tools directory
+TOOLS		:= $(REQS)/tools
+
+# SSL Certificate Script
+SSL			:= $(TOOLS)/ssl.sh
+
 # Rules
 # Build all container images
 all: nginx mariadb wordpress
+
+# Make a certificate pair
+ssl:
+	cd $(TOOLS)
+	bash $(SSL)
 
 # Build the nginx container image
 nginx: $(NGINX)/Dockerfile
@@ -41,5 +52,5 @@ clean:
 	docker rm nginx mariadb wordpress
 	docker rmi nginx mariadb wordpress
 
-# Rules not to be mistaken for files
+# Rules not to be considered files
 .PHONY: all nginx mariadb wordpress
