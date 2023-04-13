@@ -113,19 +113,33 @@ So that it starts when turning on the computer/machine:
 
 #### Useful Docker commands
 - `docker images`: list built docker images.
+- `docker build -t [name] [path]`: build image with tag
 - `docker run <image>`: run container from image
 
-### [NGinX Container](https://github.com/pandaero/42_Core_inception/master/src/requirements/nginx)
+### [SSL Certificate](https://github.com/pandaero/42_Core_inception/master/src/requirements/tools/ssl.sh)
+To provide secure access and communications with our server, we use the TLS protocol, this requires us to create a certificate, equivalent to a public key. I prepared a script based around the `openssl` command that will reliably create these certificates, given a configuration that can be found (and edited) in the same directory.
+
+### [NGINX Container](https://github.com/pandaero/42_Core_inception/master/src/requirements/nginx)
 - The [Docker Documentation](https://docs.docker.com/engine/reference/builder/) comes in handy for this process.
 - This container will run an NGINX server with a configuration file we will prepare.
 - Starting from the `alpine:3.16` docker image, we will need to install NGINX in the container. The command `apk update && apk upgrade && apk add --no-cache nginx` will install the most recent version of NGINX available. The `--no-cache` option removes the cache from the installation process, freeing up space on the container.
 - The requirements of the project ask for the NGINX communicating with TLS 1.2 and 1.3 only, this means it only communicates through HTTPS. The container requires the standard HTTPS port to be opened, so we can `EXPOSE 443`. Additionally this means for the NGINX config the following line: `ssl_protocols TLSv1.2 TLSv1.3`.
-- The configuration file for NGINX that we will prepare must also be read inside the container, we can copy our file into the container using `COPY conf/nginx.conf /etc/nginx/nginx.conf`. NGINX loads the default configuration from this location unless another is specified using `-c`.
+- The configuration file for NGINX that we will prepare must also be read inside the container, we can copy our file into the container using `COPY conf/nginx.conf /etc/nginx/nginx.conf`, but we can also mount the file to the container . NGINX loads the default configuration from this location unless another is specified using `-c`.
 - To run the NGINX server, we can pass a `CMD ["nginx", "-g", "daemon off;"]` that will run every time the container starts. (see the [differences between RUN, CMD, and ENTRYPOINT](https://www.tutorialspoint.com/run-vs-cmd-vs-entrypoint-in-docker)) (see also this [stackoverflow answer](https://stackoverflow.com/questions/25970711/what-is-the-difference-between-nginx-daemon-on-off-option) to describe the `-g daemon off;` parameter)
 
 #### [Server Configuration](https://github.com/pandaero/42_Core_inception/master/src/requirements/nginx/nginx.conf)
 According to the project requirements, the NGINX server will be hosting a WordPress + PHP website (running on another container). It is connected to this container using port 9000. Also, it will read from a volume containing the website. It will listen from (and communicate with) the internet on port 443 (securely).
-- Why would we connect the WordPress container to the NGINX? This set-up is called 'reverse proxy', and it means the NGINX server handles all incoming requests and outgoing responses, while the WordPress container only needs to handle internal communication with the NGINX container.
+- Why would we connect the WordPress container to the NGINX? This set-up is called 'reverse proxy', and it means the NGINX server handles all incoming requests and outgoing responses, while the WordPress container only needs to handle internal communication with the NGINX container. It allows us to filter communications from the internet to the website.
 
 ### [Docker-Compose Config](https://github.com/panadaero/42_Core_inception/master/src/docker-compose.yml)
-Docker-compose allows multiple-container configurations to be described and run, it will create the containers and run them with the `up` command, and stop them, deleting the containers with `down`.  
+Docker-compose allows multiple-container configurations to be described and run, using a YAML file 
+[docker-compose.yml](https://docs.divio.com/en/latest/reference/docker-docker-compose/), it will create the containers and run them with the `up` command, and stop them, deleting the containers with `down`.
+The structure of our set-up is composed of 3 *services*, each in its own container, and two shared, data-persistent *volumes*.
+
+#### [NGINX Container]
+From here, the NGINX container can have the website it will serve mounted, as well as the SSL key and certificate, and the nginx config that the server will use.
+
+#### [MariaDB Container]
+MariaDB is a SQL-based database. As the name implies, it stores data. To install MariaDB: `apk add mariadb mariadb-client`. Once this is done, it must be configured, the first command to do that is: `/etc/init.d/mariadb setup`, this will set up a starting point. We run these commands directly from the Dockerfile. To create a database with an admin user, we can use [this script]() that will run the SQL on MariaDB.
+The last piece of setup is the access port, which is 3036. we `EXPOSE 3036` from the Dockerfile, and need to edit the `/etc/my.cnf`. In fact we will replace it with [our own]()
+Since the database must be named and a user has to be set up, the Dockerfile takes these parameters as arguments (with default fallbacks), the [documentation](https://docs.docker.com/engine/reference/builder/#arg) is helpful.
