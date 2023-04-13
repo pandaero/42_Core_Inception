@@ -13,3 +13,15 @@ services:
       - ./requirements/nginx/tools/:/etc/nginx/ssl/
       - /home/pandalaf/test-server:/var/www/
     restart: always
+  mariadb:
+    build:
+      context: .
+      dockerfile: mariadb/Dockerfile
+      args:
+        dbname: ${DBNAME}
+        dbuser: ${DBUSER}
+        dbpass: ${DBPASS}
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    restart: always
