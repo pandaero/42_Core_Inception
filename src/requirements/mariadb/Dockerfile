@@ -7,5 +7,5 @@ RUN /etc/init.d/mariadb setup
 COPY /tools/sql.sh /usr/mariadb/
 COPY /conf/my.cnf /etc/
 RUN /usr/mariadb/sql.sh $dbname $dbuser $dbpass
-EXPOSE 3036
+EXPOSE 3306
 CMD ["/usr/bin/mariadbd-safe"]
