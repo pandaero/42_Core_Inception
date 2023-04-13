@@ -113,8 +113,11 @@ So that it starts when turning on the computer/machine:
 
 #### Useful Docker commands
 - `docker images`: list built docker images.
+- `docker image rm [name]`: remove image
 - `docker build -t [name] [path]`: build image with tag
 - `docker run <image>`: run container from image
+- `docker container ls`: list containers
+- `docker ps`: process status of containers
 
 ### [SSL Certificate](https://github.com/pandaero/42_Core_inception/master/src/requirements/tools/ssl.sh)
 To provide secure access and communications with our server, we use the TLS protocol, this requires us to create a certificate, equivalent to a public key. I prepared a script based around the `openssl` command that will reliably create these certificates, given a configuration that can be found (and edited) in the same directory.
