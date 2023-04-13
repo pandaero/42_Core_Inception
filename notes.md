@@ -83,6 +83,9 @@ At some point in the project, we will verify that our containers are running wel
 - To enable the display manager, the following command can be run: `rc-update add lightdm`
 - To run the display manager: `rc-service lightdm start`
 
+##### Local(host) Domain Alias
+We should have the localhost address (127.0.0.1) be pointed by our server's name, `<intra>.42.fr`. For this we edit `/etc/hosts` and add to the line with 127.0.0.1 our own alias.
+
 ## Creating the Containers
 The packages `docker` and `docker-compose` are required for this. `make` is required to use the Makefile.
 
@@ -123,3 +126,6 @@ So that it starts when turning on the computer/machine:
 #### [Server Configuration](https://github.com/pandaero/42_Core_inception/master/src/requirements/nginx/nginx.conf)
 According to the project requirements, the NGINX server will be hosting a WordPress + PHP website (running on another container). It is connected to this container using port 9000. Also, it will read from a volume containing the website. It will listen from (and communicate with) the internet on port 443 (securely).
 - Why would we connect the WordPress container to the NGINX? This set-up is called 'reverse proxy', and it means the NGINX server handles all incoming requests and outgoing responses, while the WordPress container only needs to handle internal communication with the NGINX container.
+
+### [Docker-Compose Config](https://github.com/panadaero/42_Core_inception/master/src/docker-compose.yml)
+Docker-compose allows multiple-container configurations to be described and run, it will create the containers and run them with the `up` command, and stop them, deleting the containers with `down`.  
