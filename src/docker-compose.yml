@@ -16,7 +16,7 @@ services:
   mariadb:
     build:
       context: .
-      dockerfile: mariadb/Dockerfile
+      dockerfile: requirements/mariadb/Dockerfile
       args:
         dbname: ${DBNAME}
         dbuser: ${DBUSER}
