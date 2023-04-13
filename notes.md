@@ -102,13 +102,24 @@ CMD ["/bin/sh"]
 ### Docker Configuration
 We will run docker from the machine's user, not root, so we might require `sudo` to run certain commands. Also we need to add the user to the `docker` group, by running: `addgroup <user> docker`.
 
+#### Docker daemon
+Docker runs through a service or daemon, which will have to be running when the `docker` command is used. To start it normally (one-time), we use:
+- `sudo rc-service docker start`
+So that it starts when turning on the computer/machine:
+- `rc-update add docker boot`
+
+#### Useful Docker commands
+- `docker images`: list built docker images.
+- `docker run <image>`: run container from image
+
 ### [NGinX Container](https://github.com/pandaero/42_Core_inception/master/src/requirements/nginx)
 - The [Docker Documentation](https://docs.docker.com/engine/reference/builder/) comes in handy for this process.
 - This container will run an NGINX server with a configuration file we will prepare.
 - Starting from the `alpine:3.16` docker image, we will need to install NGINX in the container. The command `apk update && apk upgrade && apk add --no-cache nginx` will install the most recent version of NGINX available. The `--no-cache` option removes the cache from the installation process, freeing up space on the container.
 - The requirements of the project ask for the NGINX communicating with TLS 1.2 and 1.3 only, this means it only communicates through HTTPS. The container requires the standard HTTPS port to be opened, so we can `EXPOSE 443`. Additionally this means for the NGINX config the following line: `ssl_protocols TLSv1.2 TLSv1.3`.
-- The configuration file for NGINX that we will prepare must also be read inside the container, we can copy our file into the container using `COPY conf /etc/nginx/nginx.conf`. NGINX loads the default configuration from this location unless another is specified using `-c`.
+- The configuration file for NGINX that we will prepare must also be read inside the container, we can copy our file into the container using `COPY conf/nginx.conf /etc/nginx/nginx.conf`. NGINX loads the default configuration from this location unless another is specified using `-c`.
 - To run the NGINX server, we can pass a `CMD ["nginx", "-g", "daemon off;"]` that will run every time the container starts. (see the [differences between RUN, CMD, and ENTRYPOINT](https://www.tutorialspoint.com/run-vs-cmd-vs-entrypoint-in-docker)) (see also this [stackoverflow answer](https://stackoverflow.com/questions/25970711/what-is-the-difference-between-nginx-daemon-on-off-option) to describe the `-g daemon off;` parameter)
 
 #### [Server Configuration](https://github.com/pandaero/42_Core_inception/master/src/requirements/nginx/nginx.conf)
-According to the project requirements, the NGINX server will be hosting a WordPress + PHP website (running on another container). It is connected to this container using port 9000. Also, it will read from a volume containing the website.
+According to the project requirements, the NGINX server will be hosting a WordPress + PHP website (running on another container). It is connected to this container using port 9000. Also, it will read from a volume containing the website. It will listen from (and communicate with) the internet on port 443 (securely).
+- Why would we connect the WordPress container to the NGINX? This set-up is called 'reverse proxy', and it means the NGINX server handles all incoming requests and outgoing responses, while the WordPress container only needs to handle internal communication with the NGINX container.
