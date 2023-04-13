@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 SERVER_NAME=pandalaf.42.fr
 SERVER_KEY=$SERVER_NAME.key
