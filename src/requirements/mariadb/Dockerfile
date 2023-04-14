@@ -1,7 +1,7 @@
 FROM alpine:3.16
 RUN apk update && apk upgrade && apk add --no-cache mariadb mariadb-client
 RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
-COPY /tools/sql.sh /usr/mariadb/
+COPY /tools/create.sh /usr/mariadb/
 COPY /conf/my.cnf /etc/
 ARG dbname=NAME
 ARG dbuser=USER
