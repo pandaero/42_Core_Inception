@@ -16,7 +16,7 @@ else
 	DB_PASS=$3
 fi
 
-DB_FILE=create.sql
+DB_FILE=$( dirname -- "$0" )/create.sql
 
 # SQL Commands to create database
 echo "CREATE DATABASE IF NOT EXISTS $DB_NAME;" > $DB_FILE
