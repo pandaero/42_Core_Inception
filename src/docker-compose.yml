@@ -16,11 +16,7 @@ services:
   mariadb:
     build:
       context: .
-      dockerfile: requirements/mariadb/Dockerfile
-      args:
-        dbname: ${DBNAME}
-        dbuser: ${DBUSER}
-        dbpass: ${DBPASS}
+      dockerfile: requirements/mariadb-russ/Dockerfile
     container_name: mariadb
     ports:
       - "3306:3306"
