@@ -6,6 +6,8 @@ SERVER_CSR=$SERVER_NAME.csr
 SERVER_CRT=$SERVER_NAME.crt
 SSL_CONF=$SERVER_NAME.cnf
 
+cd $( dirname -- "$0"; )
+
 echo "Generating private key"
 openssl genrsa -out $SERVER_KEY 4096
 if [ $? -ne 0 ]; then

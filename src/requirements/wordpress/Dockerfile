@@ -14,11 +14,11 @@ RUN apk update && apk upgrade && apk add --no-cache \
 	php81-xml \
 	php81-zip \
 	wget \
-	unzip
-	sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" /etc/php81/php-fpm.d/www.conf \
-	sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" /etc/php81/php-fpm.d/www.conf \
-	sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" /etc/php81/php-fpm.d/www.conf \
-	&& rm -f /var/cache/apk/*
+	unzip && \
+	sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" /etc/php81/php-fpm.d/www.conf && \
+	sed -i "s|;listen.owner = nobody|listen.owner = nobody|g" /etc/php81/php-fpm.d/www.conf && \
+	sed -i "s|;listen.group = nobody|listen.group = nobody|g" /etc/php81/php-fpm.d/www.conf && \
+	rm -f /var/cache/apk/*
 
 WORKDIR /var/www
 RUN wget https://wordpress.org/latest.zip && unzip latest.zip \
