@@ -11,7 +11,7 @@ services:
     volumes:
       - ./requirements/nginx/conf/:/etc/nginx/http.d/
       - ./requirements/nginx/tools/:/etc/nginx/ssl/
-      - /home/pandalaf/test-server:/var/www/
+      - wordpress:/var/www/
     restart: always
   mariadb:
     build:
@@ -21,3 +21,15 @@ services:
     ports:
       - "3306:3306"
     restart: always
+  wordpress:
+    build:
+      context: .
+      dockerfile: requirements/wordpress/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - wordpress:/var/www/
+    restart: always
+    
+volumes:
+  wordpress:
