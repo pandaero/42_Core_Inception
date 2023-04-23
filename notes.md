@@ -118,6 +118,7 @@ So that it starts when turning on the computer/machine:
 - `docker run <image>`: run container from image
 - `docker container ls`: list containers
 - `docker ps`: process status of containers
+- `docker system prune -a`: delete all resources (images, containers, networks)
 
 ### [SSL Certificate](https://github.com/pandaero/42_Core_inception/master/src/requirements/tools/ssl.sh)
 To provide secure access and communications with our server, we use the TLS protocol, this requires us to create a certificate, equivalent to a public key. I prepared a script based around the `openssl` command that will reliably create these certificates, given a configuration that can be found (and edited) in the same directory.
@@ -146,3 +147,10 @@ From here, the NGINX container can have the website it will serve mounted, as we
 MariaDB is a SQL-based database. As the name implies, it stores data. To install MariaDB: `apk add mariadb mariadb-client`. Once this is done, it must be configured, the first command to do that is: `/etc/init.d/mariadb setup`, this will set up a starting point. We run these commands directly from the Dockerfile. To create a database with an admin user, we can use [this script]() that will run the SQL on MariaDB.
 The last piece of setup is the access port, which is 3036. we `EXPOSE 3036` from the Dockerfile, and need to edit the `/etc/my.cnf`. In fact we will replace it with [our own]()
 Since the database must be named and a user has to be set up, the Dockerfile takes these parameters as arguments (with default fallbacks), the [documentation](https://docs.docker.com/engine/reference/builder/#arg) is helpful.
+
+##### SQL
+SQL (Sequel) is a database access and manipulation scripting language, and is what allows us to interact with the MariaDB database.
+
+###### Useful Commands
+These are used either in the MariaDB/MySQL console, or passed to it through a script (*.sql).
+`SHOW databases;` - Shows a list of databases in the MariaDB
