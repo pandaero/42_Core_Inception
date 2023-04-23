@@ -17,7 +17,7 @@ if [ ! -d "/varl/lib/mysql/mysql" ]; then
 fi
 
 # Make Wordpress database script
-if [ ! -d "/var/lib/mysql/wordpress" ]; then
+if [ ! -d "/var/lib/mysql/$DB_NAME" ]; then
 	# Prepare SQL script to create Wordpress database
 	DB_FILE=$( dirname -- "$0" )/createdb.sql
 	cat << EOF > /$DB_FILE
@@ -30,7 +30,7 @@ DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$ROOT_PASS';
 CREATE DATABASE $DB_NAME CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';
-GRANT ALL PRIVILIEGES ON wordpress.* TO '$DB_USER'@'%';
+GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
 	# Run database creation SQL
