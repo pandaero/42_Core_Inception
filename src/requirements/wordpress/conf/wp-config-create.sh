@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Change these
+# Change these to match MariaDB
 DB_NAME=wordpress
-DB_USER=wp
-DB_PASS=wordpresspass
+DB_USER=wordpress
+DB_PASS=PASS
 
 if [ ! -f "/var/www/wp-config.php" ]; then
 cat << EOF > /var/www/wp-config.php
