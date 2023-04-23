@@ -12,6 +12,8 @@ services:
       - ./requirements/nginx/conf/:/etc/nginx/http.d/
       - ./requirements/nginx/tools/:/etc/nginx/ssl/
       - wordpress:/var/www/
+    networks:
+      - common:
     restart: always
   mariadb:
     build:
@@ -20,6 +22,8 @@ services:
     container_name: mariadb
     ports:
       - "3306:3306"
+    networks:
+      - common:
     restart: always
   wordpress:
     build:
@@ -30,7 +34,12 @@ services:
       - .env
     volumes:
       - wordpress:/var/www/
+    networks:
+      - common:
     restart: always
     
 volumes:
   wordpress:
+
+networks:
+  common:
