@@ -19,10 +19,12 @@ RUN apk update && apk upgrade && apk add --no-cache \
 	sed -i "s|;listen.owner = nobody|listen.owner = nobody|g" /etc/php81/php-fpm.d/www.conf && \
 	sed -i "s|;listen.group = nobody|listen.group = nobody|g" /etc/php81/php-fpm.d/www.conf && \
 	rm -f /var/cache/apk/*
-
 WORKDIR /var/www
 RUN wget https://wordpress.org/latest.zip && unzip latest.zip \
 	&& cp -rf wordpress/* . && rm -rf wordpress latest.zip
 COPY requirements/wordpress/conf/wp-config-create.sh .
-RUN sh wp-config-create.sh && rm wp-config-create.sh && chmod -R 0777 wp-content/ && rm -f wp-config-create.sh
+RUN sh wp-config-create.sh && rm -f wp-config-create.sh && chmod -R 0777 wp-content/
+
+EXPOSE 9000
+
 CMD ["/usr/sbin/php-fpm81", "-F"]
