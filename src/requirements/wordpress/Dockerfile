@@ -24,5 +24,5 @@ WORKDIR /var/www
 RUN wget https://wordpress.org/latest.zip && unzip latest.zip \
 	&& cp -rf wordpress/* . && rm -rf wordpress latest.zip
 COPY requirements/wordpress/conf/wp-config-create.sh .
-RUN sh wp-config-create.sh && rm wp-config-create.sh && chmod -R 0777 wp-content/
+RUN sh wp-config-create.sh && rm wp-config-create.sh && chmod -R 0777 wp-content/ && rm -f wp-config-create.sh
 CMD ["/usr/sbin/php-fpm81", "-F"]
