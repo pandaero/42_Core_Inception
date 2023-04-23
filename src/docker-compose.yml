@@ -43,12 +43,12 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/${USER}/data/wordpress
+      device: /home/pandalaf/data/wordpress
   mariadb:
     driver_opts:
       o: bind
       type: none
-      device: /home/${USER}/data/mariadb
+      device: /home/pandalaf/data/mariadb
 
 networks:
   common:
