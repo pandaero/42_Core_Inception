@@ -2,8 +2,8 @@
 
 # CHANGE THESE VALUES
 ROOT_PASS=ROOTPASS
-DB_NAME=NAME
-DB_USER=USER
+DB_NAME=wordpress
+DB_USER=wordpress
 DB_PASS=PASS
 
 # Check mySQL running, start it if not.
@@ -33,4 +33,7 @@ CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';
 GRANT ALL PRIVILIEGES ON wordpress.* TO '$DB_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
+	# Run database creation SQL
+	/usr/bin/mariadbd --user=mysql --bootstrap < $DB_FILE
+	rm -f $DB_FILE
 fi

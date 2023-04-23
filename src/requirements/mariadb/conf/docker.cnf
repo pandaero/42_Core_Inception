@@ -6,6 +6,8 @@ port=3306
 log_error=/data/mariadb.err
 
 [mysqld]
+skip-host-cache
+skip-name-resolve
 socket=/var/lib/mysql/mysql.sock
 bind-address = 0.0.0.0
 symbolic-links=0
