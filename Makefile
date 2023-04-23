@@ -6,51 +6,68 @@
 #    By: pandalaf <pandalaf@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/07 15:28:43 by pandalaf          #+#    #+#              #
-#    Updated: 2023/04/12 20:19:47 by pandalaf         ###   ########.fr        #
+#    Updated: 2023/04/24 00:28:27 by pandalaf         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Project directories
-ROOT	:= /home/inception
-REQS	:= $(ROOT)/src/requirements
+SRCDIR	:= ./src
+REQS	:= $(SRCDIR)/requirements
 
 # Container directories
 NGINX		:= $(REQS)/nginx
 MARIADB		:= $(REQS)/mariadb
 WORDPRESS	:= $(REQS)/wordpress
 
-# Tools directory
-TOOLS		:= $(REQS)/tools
+# Environment variable file
+ENV			:= $(SRCDIR)/.env
+
+# Docker Compose Config
+COMPOSE		:= $(SRCDIR)/docker-compose.yml
 
 # SSL Certificate Script
-SSL			:= $(TOOLS)/ssl.sh
+SSL			:= $(NGINX)/tools/ssl.sh
+
+# Data (Volume) Directory Script
+DIRS		:= $(WORDPRESS)/tools/data-dirs.sh
 
 # Rules
-# Build all container images
-all: nginx mariadb wordpress
+# Build and run configuration
+all: directories ssl
+	@docker-compose -f $(COMPOSE) --env-file $(ENV) up -d
+
+directories:
+	sh $(DIRS)
 
 # Make a certificate pair
 ssl:
-	cd $(TOOLS)
-	bash $(SSL)
+	sh $(SSL)
 
-# Build the nginx container image
-nginx: $(NGINX)/Dockerfile
-	cd $(NGINX) && docker build -t $@ .
+# Build the docker configuration
+build:
+	@docker-compose -f $(COMPOSE) --env-file $(ENV) up -d --build
 
-# Build the mariadb container image
-mariadb: $(MARIADB)/Dockerfile
-	cd $(MARIADB) && docker build -t $@ .
+# Stop the docker configuration
+down:
+	@docker-compose -f $(COMPOSE) --env-file $(ENV) down
 
-# Build the wordpress container image
-wordpress: $(WORDPRESS)/Dockerfile
-	cd $(WORDPRESS) && docker build -t $@ .
+# Rebuild the docker configuration
+re: down build
 
-# Remove the containers and their images
-clean:
-	docker stop nginx mariadb wordpress
-	docker rm nginx mariadb wordpress
-	docker rmi nginx mariadb wordpress
+# Stop configuration and clean configuration-created files
+clean: down
+	@docker system prune -a
+	@sudo rm -rf ~/data/wordpress/*
+	@sudo rm -rf  ~/data/mariadb/*
+
+# Stop configuration and clean all files
+fclean:
+	@docker stop $$(docker ps -qa)
+	@docker system prune -a -f --volumes
+	@docker network prune -f
+	@docker volume prune -f
+	@sudo rm -rf ~/data/wordpress/*
+	@sudo rm -rf  ~/data/mariadb/*
 
 # Rules not to be considered files
-.PHONY: all nginx mariadb wordpress
+.PHONY: all directories ssl build down clean fclean re
