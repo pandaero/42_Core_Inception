@@ -6,12 +6,13 @@ services:
       context: .
       dockerfile: requirements/nginx/Dockerfile
     container_name: nginx
-    ports:
-      - "443:443"
     volumes:
       - ./requirements/nginx/conf/:/etc/nginx/http.d/
       - ./requirements/nginx/tools/:/etc/nginx/ssl/
       - wordpress:/var/www/
+    ports:
+      - "443:443"
+      - "9000:9000"
     networks:
       - common
     restart: always
@@ -34,6 +35,9 @@ services:
       - .env
     volumes:
       - wordpress:/var/www/
+    ports:
+      - "9000:9000"
+      - "3306:3306"
     networks:
       - common
     restart: always
