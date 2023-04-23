@@ -6,7 +6,7 @@
 #    By: pandalaf <pandalaf@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/07 15:28:43 by pandalaf          #+#    #+#              #
-#    Updated: 2023/04/24 00:28:27 by pandalaf         ###   ########.fr        #
+#    Updated: 2023/04/24 00:33:09 by pandalaf         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ DIRS		:= $(WORDPRESS)/tools/data-dirs.sh
 
 # Rules
 # Build and run configuration
-all: directories ssl
+all: directories ssl $(NGINX)/tools/pandalaf.42.fr.key $(NGINX)/tools/pandalaf.42.fr.crt
 	@docker-compose -f $(COMPOSE) --env-file $(ENV) up -d
 
 directories:
