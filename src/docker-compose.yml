@@ -13,7 +13,7 @@ services:
       - ./requirements/nginx/tools/:/etc/nginx/ssl/
       - wordpress:/var/www/
     networks:
-      - common:
+      - common
     restart: always
   mariadb:
     build:
@@ -23,7 +23,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - common:
+      - common
     restart: always
   wordpress:
     build:
@@ -35,7 +35,7 @@ services:
     volumes:
       - wordpress:/var/www/
     networks:
-      - common:
+      - common
     restart: always
     
 volumes:
