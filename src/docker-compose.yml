@@ -12,7 +12,6 @@ services:
       - wordpress:/var/www/
     ports:
       - "443:443"
-      - "9000:9000"
     networks:
       - common
     restart: always
@@ -21,8 +20,6 @@ services:
       context: .
       dockerfile: requirements/mariadb/Dockerfile
     container_name: mariadb
-    ports:
-      - "3306:3306"
     networks:
       - common
     restart: always
@@ -35,9 +32,6 @@ services:
       - .env
     volumes:
       - wordpress:/var/www/
-    ports:
-      - "9000:9000"
-      - "3306:3306"
     networks:
       - common
     restart: always
