@@ -6,8 +6,6 @@ RUN mkdir /var/run/mysqld; chmod 777 /var/run/mysqld && \
 COPY requirements/mariadb/conf/docker.cnf /etc/my.cnf.d/
 RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
-EXPOSE 3306
-
 COPY requirements/mariadb/tools/createdb.sh /scripts/
 RUN sh /scripts/createdb.sh && rm -f /scripts/createdb.sh
 
