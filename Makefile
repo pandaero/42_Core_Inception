@@ -6,7 +6,7 @@
 #    By: pandalaf <pandalaf@student.42wolfsburg.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/07 15:28:43 by pandalaf          #+#    #+#              #
-#    Updated: 2023/04/24 00:33:09 by pandalaf         ###   ########.fr        #
+#    Updated: 2023/04/24 00:35:02 by pandalaf         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,10 @@ all: directories ssl $(NGINX)/tools/pandalaf.42.fr.key $(NGINX)/tools/pandalaf.4
 
 directories:
 	sh $(DIRS)
+
+$(NGINX)/tools/pandalaf.42.fr.crt: ssl
+
+$(NGINX)/tools/pandalaf.42.fr.key: ssl
 
 # Make a certificate pair
 ssl:
